@@ -1,0 +1,2028 @@
+openapi: 3.0.3
+info:
+  title: Client-service-specification
+  description: Спецификация для Client-service
+  contact:
+    email: seyran.workwork@gmail.com
+  version: 0.0.1
+servers:
+  - url: localhost:9034/api/v1/admin/clients
+    description: dev server
+tags:
+  - name: client
+    description: Everything about client
+paths:
+  /clients/client:
+    get:
+      tags:
+        - client
+      summary: Получение списка клиентов
+      description: EP18.1.1а - просмотр списка клиентов(поиск по фамилии)
+      operationId: getAllClientsByLastName
+      parameters:
+        - name: lastName
+          in: query
+          description: Фамилия клиента для поиска.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ. Список клиентов.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: Неверный запрос. Например, отсутствует параметр lastName.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /client/all:
+    get:
+      tags:
+        - client
+      summary: Получение списка всех клиентов
+      description: EP18.1.1 - просмотр списка всех клиентов
+      operationId: getClientList
+      responses:
+        '200':
+          description: Успешный ответ. Список всех клиентов.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+
+  /client/info/{userId}:
+    get:
+      tags:
+        - client
+      summary: просмотр профиля клиента (личная информация)
+      description: EP18.1.2 - просмотр профиля клиента (личная информация)
+      operationId: getClientInfoForAdmin
+      parameters:
+        - name: userId
+          in: path
+          description: Уникальный идентификатор пользователя.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ. Информация о клиенте.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientInfoDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+        '404':
+          description: Клиент не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "Клиент не найден"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /account/{clientId}/client:
+    get:
+      tags:
+        - client
+      summary: просмотр информации о счетах клиента
+      description: EP18.2.2 - просмотр информации о счетах клиента
+      operationId: getAccountsList
+      parameters:
+        - name: clientId
+          in: path
+          description: Уникальный идентификатор клиента.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ. Список счетов клиента.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /account/{accountId}/block:
+    patch:
+      tags:
+        - client
+      summary: блокировка счета клиента
+      description: EP18.1.3 - блокировка счета клиента
+      operationId: blockAccount
+      parameters:
+        - name: accountId
+          in: path
+          description: Уникальный идентификатор счета.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ. Счет заблокирован.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockAndUnblockAccountDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+        '404':
+          description: Аккаунт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "Аккаунт не найден"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /account/{accountId}/unblock:
+    patch:
+      tags:
+        - client
+      summary: разблокировка счета клиента
+      description: EP18.1.4 - разблокировка счета клиента
+      operationId: unblockAccount
+      parameters:
+        - name: accountId
+          in: path
+          description: Уникальный идентификатор счета.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный ответ. Счет разблокирован.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockAndUnblockAccountDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+        '404':
+          description: Аккаунт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "Аккаунт не найден"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+
+  /account/{clientId}/client/new:
+    post:
+      tags:
+        - client
+      summary: открытие счета сотрудником банка
+      description: EP18.2.4 - открытие счета сотрудником банка
+      operationId: createAccount
+      parameters:
+        - name: clientId
+          in: path
+          description: Уникальный идентификатор клиента.
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        description: Данные для создания нового счета, включая тип валюты.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currencyType:
+                  type: string
+                  description: Тип валюты для счета.
+                  example: USD
+      responses:
+        '200':
+          description: Счет успешно создан.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountCreatedDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+
+
+  /cards/{cardId}/block:
+    patch:
+      tags:
+        - client
+      summary: блокировка карты определенного клиента банка
+      description: EP18.3.8 - блокировка карты определенного клиента банка
+      operationId: blockCard
+      parameters:
+        - name: cardId
+          in: path
+          description: Уникальный идентификатор карты.
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Карта успешно заблокирована.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockAndUnblockCardDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+        '404':
+          description: Карта не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "Карта не найдена"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+
+  /cards/{cardId}/unblock:
+    patch:
+      tags:
+        - client
+      summary: разблокировка карты определенного клиента банка
+      description: EP18.3.9 - разблокировка карты определенного клиента банка
+      operationId: unblockCard
+      parameters:
+        - name: cardId
+          in: path
+          description: Уникальный идентификатор карты.
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Карта успешно разблокирована.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockAndUnblockCardDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+        '404':
+          description: Карта не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "Карта не найдена"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+
+  /cards/new:
+    post:
+      tags:
+        - client
+      summary: Оформление карты
+      description: EP18.2.7 - Оформление карты
+      operationId: createCardOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardOrderDto'
+
+      responses:
+        '200':
+          description: Заказ карты успешно оформлен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardOrderCreatedDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /clients/{clientsId}/cards/all:
+    get:
+      tags:
+        - client
+      summary: Просмотр карт клиента(список)
+      description: EP18.2.6 - Просмотр карт клиента(список)
+      operationId: getListOfCardClients
+      parameters:
+        - name: clientsId
+          in: path
+          description: Уникальный идентификатор клиента.
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Успешный ответ, список карт клиента.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CardDto"
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /account/{accountId}:
+    get:
+      tags:
+        - client
+      summary: Просмотр информации о конкретном счете клиента
+      description: EP18.2.3 - Просмотр информации о конкретном счете клиента
+      operationId: getAccount
+      parameters:
+        - name: accountId
+          in: path
+          description: Идентификатор счета клиента.
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Успешный ответ, информация о счете клиента.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+        '404':
+          description: Аккаунт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "Аккаунт не найден"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /cards/{cardId}:
+    get:
+      tags:
+        - client
+      summary: Просмотр детальной информации о карте клиента
+      operationId: getCardOfClient
+      parameters:
+        - name: cardId
+          in: path
+          description: Идентификатор карты клиента.
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+        - name: "Authorization"
+          in: "header"
+          description: "Токен авторизации"
+          required: true
+          schema:
+            type: string
+            example: "Bearer abcdef123456"
+
+      responses:
+        '200':
+          description: Успешный ответ, информация о карте клиента.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardDetailsDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+        '404':
+          description: Карта не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "Карта не найдена"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+  /{clientId}/credits:
+    get:
+      tags:
+        - client
+      summary: Просмотр списка кредитов, заключенных клиентом
+      description: EP18.3.3 - Просмотр списка кредитов, заключенных клиентом
+      operationId: getListOfCreditsClients
+      parameters:
+        - name: clientId
+          in: path
+          description: Идентификатор клиента.
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Успешный ответ, список кредитов клиента.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CreditProductDTO"
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /clients/cards/{cardId}:
+    get:
+      tags:
+        - client
+      summary: Просмотр карты клиента
+      description: EP 18.2.8 - Просмотр карты клиента
+      operationId: getCardInfo
+      parameters:
+        - name: cardId
+          in: path
+          description: Идентификатор карты клиента.
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+
+      responses:
+        '200':
+          description: Успешный ответ, информация о карте клиента.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CardInfoDto"
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '404':
+          description: Карта не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "Карта не найдена"
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+  /transactionHistory/getTransactionHistory:
+    post:
+      tags:
+        - client
+      summary: Просмотр истории транзакций клиента
+      operationId: getTransactionHistory
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          description: "Токен авторизации"
+          required: true
+          schema:
+            type: string
+            example: "Bearer abcdef123456"
+        - name: page
+          in: query
+          required: true
+          description: "Номер страницы для пагинации"
+          schema:
+            type: integer
+            example: 1
+        - name: perPage
+          in: query
+          required: true
+          description: "Количество записей на странице"
+          schema:
+            type: integer
+            example: 10
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncomingCardHistoryInformationDto'
+
+      responses:
+        '200':
+          description: История транзакций успешно получена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionHistoryDetailsDto'
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+        '404':
+          description: История транзакций не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    status: 404
+                    error: Not found
+                    timestamp: "2024-11-22T12:00:00Z"
+                    message: "История транзакций не найдена"
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+  /creditApplications/approval/{id}:
+    patch:
+      tags:
+        - client
+      summary: Одобрение заявки на кредит
+      description: EP18.3.1 - Одобрение заявки на кредит
+      operationId: changeStatusLoanApp
+      parameters:
+        - name: id
+          in: path
+          description: Идентификатор заявки на кредит.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditLoanChangeStatusDto'
+
+      responses:
+        '200':
+          description: Статус заявки успешно обновлен.
+
+
+        '400':
+          description: Неверный запрос.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serverError:
+                  value:
+                    status: 500
+                    error: Internal Server Error
+                    message: "Произошла внутренняя ошибка сервера"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+        '405':
+          description: Метод не поддерживается
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                methodNotAllowed:
+                  value:
+                    status: 405
+                    error: Method not allowed
+                    message: "Метод не поддерживается"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+        '415':
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unsupportedMediaType:
+                  value:
+                    status: 415
+                    error: Unsupported Media Type
+                    message: "Формат запрашиваемых данных не поддерживается сервером, поэтому запрос отклонён"
+                    timestamp: "2024-11-22T12:00:00Z"
+
+
+
+
+
+
+components:
+  schemas:
+
+    CreditLoanChangeStatusDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: "Идентификатор заявки на кредит"
+          example: "12345"
+        status:
+          type: string
+          description: "Новый статус заявки"
+      required:
+        - id
+        - status
+
+    TransactionHistoryDetailsDto:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetailsDto'
+        pagination:
+          $ref: '#/components/schemas/PaginationDto'
+
+    PaginationDto:
+      type: object
+      properties:
+        lastPage:
+          type: integer
+          description: "Номер последней страницы"
+          example: 10
+        total:
+          type: integer
+          format: int64
+          description: "Общее количество записей"
+          example: 100
+
+    DetailsDto:
+      type: object
+      required:
+        - date
+        - operationType
+        - amount
+        - currencyCode
+      properties:
+        date:
+          type: string
+          description: "Дата совершения транзакции"
+          example: "2024-01-01"
+        operationType:
+          type: string
+          description: "Тип операции"
+          example: "Перевод"
+        amount:
+          type: string
+          description: "Размер перевода"
+          example: 1000.50
+        currencyCode:
+          type: string
+          description: "Код валюты в формате ISO"
+          example: "RUB"
+        transactionComment:
+          type: string
+          description: "Комментарий к транзакции"
+          example: "Оплата услуг"
+
+    IncomingCardHistoryInformationDto:
+      type: object
+      required:
+        - senderCardNumber
+        - clientId
+      properties:
+        senderCardNumber:
+          type: string
+          description: "Номер карты"
+          example: "1234567890123456"
+          minLength: 16
+          maxLength: 19
+          pattern: "^\\d+$"
+        dateStart:
+          type: string
+          format: date-time
+          description: "Дата с какого числа смотрим историю"
+          example: "2024-01-01T00:00:00Z"
+        dateEnd:
+          type: string
+          format: date-time
+          description: "Дата до какого числа смотрим историю"
+          example: "2024-12-31T23:59:59Z"
+        operationSearch:
+          type: string
+          description: "Поиск по операциям"
+          example: "Перевод"
+        transactionMarker:
+          type: integer
+          description: "Маркер фильтрации. 0 - Все операции, 1 - Приходы, 2 - Расходы"
+          example: 1
+        comment:
+          type: string
+          description: "Комментарий к транзакции"
+          example: "Транзакция с комиссией"
+        clientId:
+          type: string
+          description: "Id клиента"
+          example: "clientId123"
+
+
+    CardInfoDto:
+      type: object
+      properties:
+        cardId:
+          type: integer
+          format: int64
+          description: "Уникальный идентификатор карты клиента."
+          example: 12345
+        cardProductId:
+          type: integer
+          format: int64
+          description: "Идентификатор типа карты."
+          example: 2
+        cardNumber:
+          type: string
+          description: "Номер карты клиента."
+          example: "1234 5678 9012 3456"
+        holderName:
+          type: string
+          description: "Имя держателя карты."
+          example: "Иван Иванов"
+        accountNumber:
+          type: string
+          description: "Номер счета, связанного с картой."
+        expirationDate:
+          type: string
+          format: date
+          description: "Дата истечения срока действия карты."
+          example: "2025-12-31"
+        currency:
+          type: string
+          description: "Валюта карты."
+          example: "RUB"
+        isActive:
+          type: boolean
+          description: "Флаг активности карты."
+          example: true
+        isBankBlocked:
+          type: boolean
+          description: "Флаг, указывающий, заблокирована ли карта банком."
+          example: false
+        isUserBlocked:
+          type: boolean
+          description: "Флаг, указывающий, заблокирована ли карта пользователе."
+          example: false
+        cvv:
+          type: string
+          description: "CVV код карты."
+          example: "123"
+        productName:
+          type: string
+          description: "Название продукта карты."
+          example: "Gold"
+        imageLink:
+          type: string
+          description: "Ссылка на изображение карты."
+          example: "http://example.com/card_image.png"
+        type:
+          type: string
+          description: "Тип карты."
+          example: "Кредитная"
+        paymentSystem:
+          type: string
+          description: "Платежная система карты."
+          example: "VISA"
+
+    CreditProductDTO:
+      type: object
+      properties:
+        creditProductName:
+          type: string
+          description: "Название кредитного продукта"
+          example: "На 100 лет в долговую яму"
+        leftAmount:
+          type: string
+          format: decimal
+          description: "Оставшаяся сумма по кредиту"
+          example: "6000000.00"
+        monthlyPayment:
+          type: string
+          description: "Ежемесячный платеж"
+          example: "26000.00"
+          format: decimal
+        monthlyPaymentDate:
+          type: string
+          format: date-time
+          description: "Дата следующего ежемесячного платежа"
+          example: "2024-01-08T00:00:00Z"
+        dueDate:
+          type: string
+          format: date-time
+          description: "Дата закрытия кредита"
+          example: "2024-01-08T00:00:00Z"
+        isActive:
+          type: boolean
+          description: "Флаг активности продукта (активен/закрыт)"
+          example: false
+        isArchived:
+          type: boolean
+          description: "Флаг архивации продукта (продукт закрыт)"
+          example: false
+
+
+    CardDetailsDto:
+      type: object
+      properties:
+        cardId:
+          type: integer
+          format: int64
+          description: "Идентификатор карты"
+        cardProductId:
+          type: integer
+          format: int64
+          description: "Идентификатор продукта карты"
+        cardNumber:
+          type: string
+          description: "Номер карты"
+          example: "1234 5678 9012 3456"
+        holderName:
+          type: string
+          description: "Имя держателя карты"
+          example: "Иван Иванов"
+        accountNumber:
+          type: string
+          description: "Номер счета, связанным с картой"
+        expirationDate:
+          type: string
+          format: date
+          description: "Дата истечения срока действия карты"
+          example: "2025-12-31"
+        currency:
+          type: string
+          description: "Валюта карты"
+          example: "RUB"
+        isActive:
+          type: boolean
+          description: "Активна ли карта"
+          example: true
+        isBankBlocked:
+          type: boolean
+          description: "Заблокирована ли карта банком"
+          example: false
+        isUserBlocked:
+          type: boolean
+          description: "Заблокирована ли карта пользователем"
+          example: false
+        cvv:
+          type: string
+          description: "CVV код карты"
+          example: "123"
+        productName:
+          type: string
+          description: "Название продукта карты"
+          example: "Кредитная карта"
+        imageLink:
+          type: string
+          description: "Ссылка на изображение карты"
+          example: "http://example.com/card_image.png"
+        type:
+          type: string
+          description: "Тип карты (например, дебетовая или кредитная)"
+          example: "Кредитная"
+        paymentSystem:
+          type: string
+          description: "Платежная система карты (например, Visa, MasterCard)"
+          example: "Visa"
+
+
+    CardDto:
+      type: object
+      properties:
+        holderName:
+          type: string
+          description: "Имя держателя карты"
+          example: "Max"
+        cardNumber:
+          type: string
+          description: "Номер карты"
+          example: "1234 5678 9012 3456"
+        cardProductType:
+          type: string
+          description: "Тип продукта карты"
+          example: "Кредитная"
+        currency:
+          type: string
+          description: "Валюта карты"
+          example: "RUB"
+        expirationDate:
+          type: string
+          description: "Дата истечения срока действия карты"
+          example: "2025-12"
+        isActive:
+          type: boolean
+          description: "Активна ли карта"
+          example: true
+        isBankBlocked:
+          type: boolean
+          description: "Заблокирована ли карта банком"
+          example: false
+        isUserBlocked:
+          type: boolean
+          description: "Заблокирована ли карта пользователем"
+          example: false
+
+    CardOrderCreatedDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: "Успешность операции"
+          example: true
+        message:
+          type: string
+          description: "Сообщение о статусе операции"
+          example: "Карта успешно оформлена"
+
+    CardOrderDto:
+      type: object
+      required:
+        - cardProductId
+        - currencyCode
+        - deliveryType
+        - homeNumber
+        - bearerToken
+      properties:
+        id:
+          type: integer
+          description: "Уникальный идентификатор заказа"
+          example: 1
+        accountId:
+          type: string
+          format: uuid
+          description: "Идентификатор счета, на котором будет оформлена карта"
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        cardProductId:
+          type: integer
+          format: int64
+          description: "Идентификатор типа карты, которую нужно оформить"
+          example: 2
+        currencyCode:
+          type: string
+          description: "Код валюты для карты"
+          example: "USD"
+        deliveryType:
+          type: string
+          description: "Тип доставки карты (например, 'почтой' или 'курьером')"
+          example: "почтой"
+        holderName:
+          type: string
+          minLength: 1
+          description: "Имя держателя карты (не может быть пустым)"
+          example: "Иван Иванов"
+        city:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: "Город для доставки карты (не может быть пустым)"
+          example: "Москва"
+        street:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: "Улица для доставки карты (не может быть пустым)"
+          example: "Ленина"
+        homeNumber:
+          type: string
+          description: "Номер дома для доставки карты"
+          example: "10"
+        bearerToken:
+          type: string
+          description: "Токен авторизации"
+          example: "Bearer abcdef123456"
+        flat:
+          type: string
+          description: "Квартира для доставки карты"
+          example: "25"
+        intercom:
+          type: string
+          description: "Код домофона для доставки карты"
+          example: "101"
+        floor:
+          type: integer
+          description: "Этаж для доставки карты"
+          example: 3
+
+
+
+    BlockAndUnblockCardDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: "Успешность операции"
+          example: true
+        message:
+          type: string
+          description: "Сообщение"
+          example: "Операция выполнена успешно"
+
+    AccountCreatedDto:
+      type: object
+      properties:
+        dateOfCreate:
+          type: string
+          format: date
+          description: Дата создания счета.
+          example: 2023-01-01
+        accountNumber:
+          type: string
+          description: Номер счета.
+          example: 76205501561145171569
+        accountType:
+          type: string
+          description: Тип аккаунта.
+          example: Текущий
+        currencyType:
+          type: string
+          description: Тип валюты счета.
+          example: USD
+        currentBalance:
+          type: number
+          format: double
+          description: Текущий баланс счета.
+          example: 1000.50
+        isActive:
+          type: boolean
+          description: Статус активности счета.
+          example: true
+
+    BlockAndUnblockAccountDto:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+          description: Уникальный номер счета.
+          example: 76205501561145171569
+        status:
+          type: boolean
+          description: Статус счета (заблокирован/активен).
+          example: true
+        currentBalance:
+          type: string
+          description: Текущий баланс счета.
+          example: 100500.00
+        dateOfClose:
+          type: string
+          format: date-time
+          description: Дата блокировки / разблокировки счета.
+          example: 2024-01-02T00:00:00Z
+
+    AccountDto:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+          description: Уникальный номер счета.
+          example: 76205501561145171569
+        currencyCode:
+          type: string
+          description: Код валюты счета.
+          example: USD
+        currentBalance:
+          type: string
+          description: Текущий баланс счета.
+          example: 1000.50
+        dateOfCreate:
+          type: string
+          format: date
+          description: Дата создания счета.
+          example: 2023-01-01
+        isActive:
+          type: boolean
+          description: Активен ли счет.
+          example: true
+        accountId:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор счета.
+          example: f1819033-3aa3-49bf-9fb1-f69c91282cc2
+
+
+    ClientDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор пользователя.
+          example: b20d84b2-74d7-46c2-9cd3-0314b39c987c
+        firstName:
+          type: string
+          description: Имя пользователя.
+          example: Иван
+        middleName:
+          type: string
+          description: Отчество пользователя.
+          example: Иванович
+        lastName:
+          type: string
+          description: Фамилия пользователя.
+          example: Иванов
+        passportNumber:
+          type: string
+          description: Номер паспорта пользователя.
+          example: MP1234567
+        mobilePhone:
+          type: string
+          description: Мобильный телефон пользователя.
+          example: +375291234567
+        email:
+          type: string
+          format: email
+          description: Электронная почта пользователя.
+          example: Ivanov@example.com
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP статус код ошибки.
+          example: 400
+        error:
+          type: string
+          description: Краткое описание ошибки.
+          example: Bad Request
+        message:
+          type: string
+          description: Детализированное сообщение об ошибке.
+          example: Обязательный параметр не должен быть пустым.
+        timestamp:
+          type: string
+          format: date-time
+          description: Время возникновения ошибки.
+          example: 2024-11-22T12:00:00Z
+    
+    
+    ClientInfoDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор пользователя.
+        firstName:
+          type: string
+          description: Имя пользователя.
+          example: Иван
+        middleName:
+          type: string
+          description: Отчество пользователя.
+          example: Иванович
+        lastName:
+          type: string
+          description: Фамилия пользователя.
+          example: Иванов
+        passportNumber:
+          type: string
+          description: Номер паспорта пользователя.
+          example: MP1234567
+        issuanceDate:
+          type: string
+          format: date
+          description: Дата выдачи паспорта.
+          example: 2020-01-01
+        issuedBy:
+          type: string
+          description: Кем выдан паспорт.
+          example: ОВД Октябрьского района
+        departmentCode:
+          type: string
+          description: Код подразделения.
+          example: 770-051
+        registrationAddress:
+          type: string
+          description: Адрес регистрации.
+          example: г. Минск, ул. Ленина, д. 1
+        passportRegistrationDate:
+          type: string
+          format: date
+          description: Дата регистрации паспорта.
+          example: 2020-01-02
+        email:
+          type: string
+          format: email
+          description: Электронная почта пользователя.
+          example: ivanov@example.com
+        mobilePhone:
+          type: string
+          description: Мобильный телефон пользователя.
+          example: +375291234567
+        question:
+          type: string
+          description: Контрольный вопрос.
+          example: Имя первого питомца?
+          
+
+    
+
